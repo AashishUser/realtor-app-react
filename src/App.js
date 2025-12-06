@@ -9,7 +9,6 @@ import Header from "./components/Header";
 import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// import "react-toastify/dist/ReactToastify";
 function App() {
   return (
     <>
