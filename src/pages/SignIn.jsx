@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import OAuth from "../components/OAuth";
+import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
+import { toast } from "react-toastify";
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
@@ -10,12 +12,29 @@ export default function SignIn() {
     password: "",
   });
   const { email, password } = formData;
+  const navigate = useNavigate();
   function onChange(e) {
     console.log(e.target.value);
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  }
+  async function onSubmit(e) {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      if (userCredential.user) {
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error("Bad User credential");
+    }
   }
   return (
     <section>
@@ -28,7 +47,7 @@ export default function SignIn() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-          <form action="">
+          <form onSubmit={onSubmit}>
             <input
               className="mb-6 w-full px-4 py-2 text-xl text-gray-700 bg-white rounded transition ease-in-out"
               type="text"
